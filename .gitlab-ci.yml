@@ -1,0 +1,18 @@
+before_script:
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+
+spec:
+  script:
+    - SIMPLECOV=true bundle exec rake spec
+  tags:
+    - ruby
+
+rubocop:
+  script:
+    - bundle exec rake rubocop
+  tags:
+    - ruby
+

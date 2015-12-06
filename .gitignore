@@ -1,0 +1,12 @@
+.bundle
+.idea
+.vscode
+.yardoc
+Gemfile.lock
+_yardoc/
+coverage/
+doc/
+pkg/
+spec/reports/
+spec/coverage/
+tmp/
