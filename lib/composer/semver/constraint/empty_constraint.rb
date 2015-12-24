@@ -21,18 +21,10 @@ module Composer
           true
         end
 
-        def pretty_string=(pretty_string)
-          @pretty_string = pretty_string
-        end
-
-        def pretty_string
-          return to_s unless @pretty_string
-          @pretty_string
-        end
-
         def to_s
           '[]'
         end
+
       end
     end
   end

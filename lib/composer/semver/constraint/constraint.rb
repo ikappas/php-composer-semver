@@ -13,8 +13,6 @@ module Composer
     module Constraint
       class Constraint < ::Composer::Semver::Constraint::Base
 
-        # attr_reader :operator, :version
-
         # operator integer values
         OP_EQ = 0
         OP_LT = 1
@@ -32,15 +30,25 @@ module Composer
 
         # Operator to integer translation table.
         def self.trans_op_str
+          # @trans_op_str ||= {
+          #     '='  => OP_EQ,
+          #     '==' => OP_EQ,
+          #     '<'  => OP_LT,
+          #     '<=' => OP_LE,
+          #     '>'  => OP_GT,
+          #     '>=' => OP_GE,
+          #     '<>' => OP_NE,
+          #     '!=' => OP_NE,
+          # }.freeze
           @trans_op_str ||= {
-              '='  => OP_EQ,
-              '==' => OP_EQ,
-              '<'  => OP_LT,
-              '<=' => OP_LE,
-              '>'  => OP_GT,
-              '>=' => OP_GE,
-              '<>' => OP_NE,
-              '!=' => OP_NE,
+              '='.to_sym  => OP_EQ,
+              '=='.to_sym => OP_EQ,
+              '<'.to_sym  => OP_LT,
+              '<='.to_sym => OP_LE,
+              '>'.to_sym  => OP_GT,
+              '>='.to_sym => OP_GE,
+              '<>'.to_sym => OP_NE,
+              '!='.to_sym => OP_NE,
           }.freeze
         end
 
@@ -58,12 +66,12 @@ module Composer
 
         def initialize(operator, version)
 
-          if self.class.trans_op_str[operator].nil?
+          if ! operator.respond_to?('to_sym') || self.class.trans_op_str[operator.to_sym].nil?
             raise ArgumentError,
                   "Invalid operator \"#{operator}\" given, expected one of: #{self.class.supported_operators.join(', ')}"
           end
 
-          @operator = self.class.trans_op_str[operator]
+          @operator = self.class.trans_op_str[operator.to_sym]
           @version = version
         end
 
@@ -99,9 +107,10 @@ module Composer
             return compare != 0
           when '', '<', 'lt'
             return compare < 0
+          else
+            return false
           end
 
-          false
         end
 
         def match_specific?(provider, compare_branches = false)
@@ -175,7 +184,7 @@ module Composer
             v1 = version1.dup.split('.')
           else
             # canonicalize_version
-            v1 = version1.strip.gsub(/([\-?_?\+?])/, '.').gsub(/([^\d\.])([^\D\.])/){"#{$1}.#{$2}"}.gsub(/([^\D\.])([^\d\.])/){"#{$1}.#{$2}"}.gsub(/([\.][\.])/, '.').split('.')
+            v1 = version1.strip.gsub(/([\-?_\+])/, '.').gsub(/([^\d\.])([^\D\.])/){"#{$1}.#{$2}"}.gsub(/([^\D\.])([^\d\.])/){"#{$1}.#{$2}"}.gsub(/([\.][\.])/, '.').split('.')
           end
 
           # parse version 2
@@ -183,7 +192,7 @@ module Composer
             v2 = version2.dup.split('.')
           else
             # canonicalize_version
-            v2 = version2.strip.gsub(/([\-?_?\+?])/, '.').gsub(/([^\d\.])([^\D\.])/){"#{$1}.#{$2}"}.gsub(/([^\D\.])([^\d\.])/){"#{$1}.#{$2}"}.gsub(/([\.][\.])/, '.').split('.')
+            v2 = version2.strip.gsub(/([\-?_\+])/, '.').gsub(/([^\d\.])([^\D\.])/){"#{$1}.#{$2}"}.gsub(/([^\D\.])([^\d\.])/){"#{$1}.#{$2}"}.gsub(/([\.][\.])/, '.').split('.')
           end
 
           compare = i = 0
@@ -238,21 +247,29 @@ module Composer
         def php_forms_compare(form1, form2)
 
           special_forms = {
-            'dev'   => 0,
-            'alpha' => 1,
-            'a'     => 1,
-            'beta'  => 2,
-            'b'     => 2,
-            'RC'    => 3,
-            'rc'    => 3,
-            '#'     => 4,
-            'pl'    => 5,
-            'p'     => 5,
-            nil     => 0,
+              dev:          0,
+              alpha:        1,
+              a:            1,
+              beta:         2,
+              b:            2,
+              RC:           3,
+              rc:           3,
+              '#'.to_sym => 4,
+              pl:           5,
+              p:            5
           }
 
-          f1 = special_forms[form1] ? special_forms[form1] : -1
-          f2 = special_forms[form2] ? special_forms[form2] : -1
+          if form1.nil?
+            f1 = 0
+          else
+            f1 = special_forms[form1.to_sym] ? special_forms[form1.to_sym] : -1
+          end
+
+          if form2.nil?
+            f2 = 0
+          else
+            f2 = special_forms[form2.to_sym] ? special_forms[form2.to_sym] : -1
+          end
 
           f1 - f2 <=> 0
         end

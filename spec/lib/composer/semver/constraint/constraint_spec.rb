@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../../../spec_helper'
 
 describe ::Composer::Semver::Constraint::Constraint do
 
@@ -92,7 +92,7 @@ describe ::Composer::Semver::Constraint::Constraint do
       expect(version_require.matches?(version_provide)).to be_falsey
       expect(version_require.match_specific?(version_provide, true)).to be_falsey
 
-      version_require = constraint.new('<', '0.12.0');
+      version_require = constraint.new('<', '0.12.0')
       version_provide = constraint.new('==', 'dev-foo')
 
       expect(version_require.matches?(version_provide)).to be_falsey

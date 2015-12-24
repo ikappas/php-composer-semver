@@ -66,8 +66,6 @@ module Composer
 
         protected
 
-        attr_accessor :version_parser
-
         # @var VersionParser */
         def version_parser
           @version_parser ||= ::Composer::Semver::VersionParser.new

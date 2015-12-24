@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe ::Composer::Semver::VersionParser do
 
@@ -255,13 +255,14 @@ describe ::Composer::Semver::VersionParser do
     ].each do |test|
       it "succeeds on parsing wildcard #{test[:input]}" do
         if test[:min]
-        min = ::Composer::Semver::Constraint::Constraint.new(test[:min][:operator], test[:min][:version])
-        max = ::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version])
-        expected = String(::Composer::Semver::Constraint::MultiConstraint.new([min, max]))
+          min = ::Composer::Semver::Constraint::Constraint.new(test[:min][:operator], test[:min][:version])
+          max = ::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version])
+          expected = String(::Composer::Semver::Constraint::MultiConstraint.new([min, max]))
         else
           expected = String(::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version]))
         end
-        expect( outcome = String(parser.parse_constraints(test[:input])) ).to be == expected, failure_message(test[:input], expected, outcome)
+        outcome = String(parser.parse_constraints(test[:input]))
+        expect( outcome ).to be == expected, failure_message(test[:input], expected, outcome)
       end
     end
 
@@ -283,7 +284,8 @@ describe ::Composer::Semver::VersionParser do
         min = ::Composer::Semver::Constraint::Constraint.new(test[:min][:operator], test[:min][:version])
         max = ::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version])
         expected = String(::Composer::Semver::Constraint::MultiConstraint.new([min, max]))
-        expect( outcome = String(parser.parse_constraints(test[:input])) ).to be == expected, failure_message(test[:input], expected, outcome)
+        outcome = String(parser.parse_constraints(test[:input]))
+        expect( outcome ).to be == expected, failure_message(test[:input], expected, outcome)
       end
     end
 
@@ -307,7 +309,8 @@ describe ::Composer::Semver::VersionParser do
         min = ::Composer::Semver::Constraint::Constraint.new(test[:min][:operator], test[:min][:version])
         max = ::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version])
         expected = String(::Composer::Semver::Constraint::MultiConstraint.new([min, max]))
-        expect( outcome = String(parser.parse_constraints(test[:input])) ).to be == expected, failure_message(test[:input], expected, outcome)
+        outcome = String(parser.parse_constraints(test[:input]))
+        expect( outcome ).to be == expected, failure_message(test[:input], expected, outcome)
       end
     end
 
@@ -328,7 +331,8 @@ describe ::Composer::Semver::VersionParser do
         min = ::Composer::Semver::Constraint::Constraint.new(test[:min][:operator], test[:min][:version])
         max = ::Composer::Semver::Constraint::Constraint.new(test[:max][:operator], test[:max][:version])
         expected = String(::Composer::Semver::Constraint::MultiConstraint.new([min, max]))
-        expect( outcome = String(parser.parse_constraints(test[:input])) ).to be == expected, failure_message(test[:input], expected, outcome)
+        outcome = String(parser.parse_constraints(test[:input]))
+        expect( outcome ).to be == expected, failure_message(test[:input], expected, outcome)
       end
     end
 

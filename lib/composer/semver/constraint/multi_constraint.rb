@@ -26,19 +26,18 @@ module Composer
           raise ArgumentError,
                 'The "provider" argument is invalid' unless provider.kind_of?(::Composer::Semver::Constraint::Base)
 
-          unless @conjunctive
+          if @conjunctive
+            @constraints.each do |constraint|
+              return false unless constraint.matches?(provider)
+            end
+            true
+          else
             @constraints.each do |constraint|
               return true if constraint.matches?(provider)
             end
             false
-          else
-            @constraints.each do |constraint|
-              if !constraint.matches?(provider)
-                return false
-              end
-            end
-            true
           end
+
         end
 
         def match_specific?(provider)
@@ -47,15 +46,6 @@ module Composer
                 'The "provider" argument is invalid' unless provider.instance_of?(self.class)
 
           matches?(provider)
-        end
-
-        def pretty_string=(pretty_string)
-          @pretty_string = pretty_string
-        end
-
-        def pretty_string
-          return to_s unless @pretty_string
-          @pretty_string
         end
 
         def to_s

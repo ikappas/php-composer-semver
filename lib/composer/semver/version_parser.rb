@@ -10,6 +10,7 @@
 
 module Composer
   module Semver
+
     # Version Parser
     #
     # PHP Authors:
